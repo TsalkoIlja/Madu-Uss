@@ -44,15 +44,26 @@ namespace Madu_Uss
                         uss.PraeguneSuund = Suund.Paremale;
                 }
 
+                // Katkend failist Program.cs (Mängu tsükli seest):
+
                 uss.Liigu();
                 Punkt pea = uss.HangiPea();
 
-                // Kokkupõrke kontroll kaardi reaalsete takistustega (seintega)
+                // 1. Kontroll: Kas uss põrkas vastu seina?
                 if (kaart.Takistused.Any(t => t.X == pea.X && t.Y == pea.Y))
                 {
                     Heliefektid.MängiKaotust();
                     break;
                 }
+
+                // 2. KONTROLL (UUS): Kas uss sõitis endale otsa?
+                if (uss.KasPõrkasVastuEnnast())
+                {
+                    Heliefektid.MängiKaotust();
+                    break; // Mäng läbi, väljume tsüklist
+                }
+
+
 
                 // Toidu söömise kontroll, skoori lisamine ja heliefekt
                 if (pea.X == toit.Asukoht.X && pea.Y == toit.Asukoht.Y)

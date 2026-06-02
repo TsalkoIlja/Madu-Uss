@@ -51,5 +51,16 @@ namespace Madu_Uss
         {
             keha.Add(new Punkt(keha.Last().X, keha.Last().Y, '*'));
         }
+
+        // Lisa see meetod Uss.cs klassi sisse
+
+        public bool KasPõrkasVastuEnnast()
+        {
+            Punkt pea = keha.First();
+
+            // Kontrollime kõiki kehaosi peale pea (Skip(1))
+            // Kui mõni kehaosa on peaga samal koordinaadil, tagastatakse true
+            return keha.Skip(1).Any(kehaOsa => kehaOsa.X == pea.X && kehaOsa.Y == pea.Y);
+        }
     }
 }
