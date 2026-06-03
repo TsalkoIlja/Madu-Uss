@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq; // Vajalik LINQ kontrolliks
 using System.Text;
 
 namespace Madu_Uss
@@ -15,17 +16,24 @@ namespace Madu_Uss
         {
             ekraaniLaius = laius;
             ekraaniKõrgus = kõrgus;
-            LooUusToit();
         }
 
-        public void LooUusToit()
+        // Uus meetod välistab toidu tekkimise ussi keha sisse
+        public void LooUusToit(List<Punkt> ussiKeha)
         {
-            int x = rnd.Next(2, ekraaniLaius - 2);
-            int y = rnd.Next(2, ekraaniKõrgus - 2);
-            Asukoht = new Punkt(x, y, '@'); // Toit näeb välja nagu '@'
-            Asukoht.Joonista();
+            while (true)
+            {
+                int x = rnd.Next(2, ekraaniLaius - 2);
+                int y = rnd.Next(2, ekraaniKõrgus - 2);
+
+                // LINQ kontroll: kui ussi kehas EI OLE ühtegi punkti nende koordinaatidega
+                if (!ussiKeha.Any(p => p.X == x && p.Y == y))
+                {
+                    Asukoht = new Punkt(x, y, '@', ConsoleColor.Yellow);
+                    Asukoht.Joonista();
+                    break; // Väljub tsüklist, kui asukoht on turvaline
+                }
+            }
         }
-
-
     }
 }

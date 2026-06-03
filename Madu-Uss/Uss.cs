@@ -1,21 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Linq;
 
 namespace Madu_Uss
 {
     public class Uss
     {
         private List<Punkt> keha = new List<Punkt>();
+        private bool peabKasvama = false; // Lüliti turvaliseks kasvamiseks
+
         public Suund PraeguneSuund { get; set; }
+        public List<Punkt> Keha => keha; // Avalik omadus keha andmetele ligipääsuks
 
         public Uss(int algX, int algY, int pikkus)
         {
-            PraeguneSuund = Suund.Paremale; // Alguses liigub paremale
+            PraeguneSuund = Suund.Paremale;
 
             for (int i = 0; i < pikkus; i++)
             {
-                Punkt p = new Punkt(algX - i, algY, '*');
+                Punkt p = new Punkt(algX - i, algY, '*', ConsoleColor.Green);
                 keha.Add(p);
                 p.Joonista();
             }
@@ -24,7 +27,7 @@ namespace Madu_Uss
         public void Liigu()
         {
             Punkt pea = keha.First();
-            Punkt uusPea = new Punkt(pea.X, pea.Y, '*');
+            Punkt uusPea = new Punkt(pea.X, pea.Y, '*', ConsoleColor.Green);
 
             switch (PraeguneSuund)
             {
@@ -37,29 +40,26 @@ namespace Madu_Uss
             keha.Insert(0, uusPea);
             uusPea.Joonista();
 
-            Punkt saba = keha.Last();
-            saba.Kustuta();
-            keha.Remove(saba);
+            // Kui lüliti on aktiivne, siis saba ei kustutata (uss kasvab)
+            if (peabKasvama)
+            {
+                peabKasvama = false;
+            }
+            else
+            {
+                Punkt saba = keha.Last();
+                saba.Kustuta();
+                keha.Remove(saba);
+            }
         }
 
-        public Punkt HangiPea()
-        {
-            return keha.First();
-        }
+        public Punkt HangiPea() => keha.First();
 
-        public void Kasva()
-        {
-            keha.Add(new Punkt(keha.Last().X, keha.Last().Y, '*'));
-        }
-
-        // Lisa see meetod Uss.cs klassi sisse
+        public void Kasva() => peabKasvama = true; // Aktiveerib lüliti
 
         public bool KasPõrkasVastuEnnast()
         {
             Punkt pea = keha.First();
-
-            // Kontrollime kõiki kehaosi peale pea (Skip(1))
-            // Kui mõni kehaosa on peaga samal koordinaadil, tagastatakse true
             return keha.Skip(1).Any(kehaOsa => kehaOsa.X == pea.X && kehaOsa.Y == pea.Y);
         }
     }
