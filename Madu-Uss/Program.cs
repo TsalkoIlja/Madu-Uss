@@ -12,12 +12,14 @@ namespace Madu_Uss
             Console.CursorVisible = false;
 
             // UUS: Kutsume välja interaktiivse peamenüü ja saame sealt taseme numbri
+            //  Внедрение нового меню и динамических настроек экрана
             int tase = KuvaMenüü();
 
             MänguSeaded seaded = new MänguSeaded(tase);
             Console.Clear();
 
             // Akna ja puhvri suurus seadistatakse pärast menüüd
+            // Запас по высоте (+4), чтобы сверху поместился интерфейс счета
             int windowWidth = seaded.Laius + 4;
             int windowHeight = seaded.Kõrgus + 4;
             Console.SetWindowSize(windowWidth, windowHeight);
@@ -27,12 +29,16 @@ namespace Madu_Uss
             Kaart kaart = new Kaart(seaded.Laius, seaded.Kõrgus);
             Uss uss = new Uss(10, 10, 3);
             Toit toit = new Toit(seaded.Laius, seaded.Kõrgus);
+
+            // Инициализация нашего нового объекта-врага
             Vaenlane vaenlane = new Vaenlane(seaded.Laius, seaded.Kõrgus);
             int skoor = 0;
 
             kaart.Joonista();
             toit.LooUusToit(uss.Keha);
             vaenlane.Joonista();
+
+            // Вызов нашего кастомного метода отрисовки счета в самом верху (Y=0)
             UuendaSkoor(skoor);
 
             // MÄNGU PEATSÜKKEL
@@ -52,6 +58,8 @@ namespace Madu_Uss
                 }
 
                 uss.Liigu();
+
+                // Моя доработка: запуск движения врага на каждом кадре
                 vaenlane.Liigu(kaart.Takistused);
 
                 Punkt pea = uss.HangiPea();
@@ -68,6 +76,7 @@ namespace Madu_Uss
                     break;
                 }
 
+                // Моя доработка: Проверка столкновения змейки с врагом (Game Over)
                 if (pea.X == vaenlane.Asukoht.X && pea.Y == vaenlane.Asukoht.Y)
                 {
                     Heliefektid.MängiKaotust();
@@ -106,7 +115,7 @@ namespace Madu_Uss
         // UUS: Interaktiivne nooleklahvidega menüü
         static int KuvaMenüü()
         {
-            int valitudIndeks = 0;
+            int valitudIndeks = 0; // Индекс подсвеченного пункта
             string[] valikud = { " Tase 1 (Kerge) ", " Tase 2 (Keskmine) ", " Tase 3 (Raske) " };
 
             Console.SetWindowSize(50, 15);
@@ -126,7 +135,7 @@ namespace Madu_Uss
                 {
                     Console.SetCursorPosition(14, 7 + i);
 
-                    if (i == valitudIndeks)
+                    if (i == valitudIndeks) // Если пункт выбран, инвертируем цвета (зеленый фон, белый текст)
                     {
                         // Toome aktiivse valiku värviga esile
                         Console.BackgroundColor = ConsoleColor.DarkGreen;
@@ -140,6 +149,7 @@ namespace Madu_Uss
                     }
                 }
 
+                // Считываем нажатие клавиши в меню
                 ConsoleKeyInfo klahv = Console.ReadKey(true);
 
                 if (klahv.Key == ConsoleKey.UpArrow)
@@ -160,10 +170,10 @@ namespace Madu_Uss
 
         static void UuendaSkoor(int skoor)
         {
-            Console.SetCursorPosition(2, 0);
-            Console.ForegroundColor = ConsoleColor.Cyan;
-            Console.Write($"SKOOR: {skoor}  ");
-            Console.ResetColor();
+            Console.SetCursorPosition(2, 0); // Перемещаем курсор на самую верхнюю строчку (Y=0) над картой
+            Console.ForegroundColor = ConsoleColor.Cyan; // Неоновый голубой цвет для интерфейса
+            Console.Write($"SKOOR: {skoor}  ");  // Пробелы в конце стирают старые символы
+            Console.ResetColor(); 
         }
     }
 }

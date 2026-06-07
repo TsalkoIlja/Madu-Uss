@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Linq; // Нужен для проверки стен через .Any()
 
 namespace Madu_Uss
 {
     public class Vaenlane
     {
         private Random rnd = new Random();
-        public Punkt Asukoht { get; private set; }
+        public Punkt Asukoht { get; private set; } // Хранит точку, где сейчас находится враг
         private int ekraaniLaius;
         private int ekraaniKõrgus;
 
@@ -16,6 +16,7 @@ namespace Madu_Uss
             ekraaniLaius = laius;
             ekraaniKõrgus = kõrgus;
             // Alustame vaenlase loomist mänguvälja keskosast
+            // Спавним врага точно по центру поля, делаем его фиолетовым 'X'
             Asukoht = new Punkt(laius / 2, kõrgus / 2, 'X', ConsoleColor.Magenta);
         }
 
@@ -24,13 +25,14 @@ namespace Madu_Uss
             Asukoht.Joonista();
         }
 
+        // ИИ врага: делает случайный шаг и проверяет, чтобы там не было стены
         public void Liigu(List<Punkt> seinad)
         {
             // Kustutame vaenlase vana asukoha
-            Asukoht.Kustuta();
+            Asukoht.Kustuta(); // Стираем врага со старой позиции
 
             int katseid = 0;
-            while (katseid < 10)
+            while (katseid < 10) // 10 попыток найти свободную клетку
             {
                 int uusX = Asukoht.X;
                 int uusY = Asukoht.Y;
@@ -46,11 +48,12 @@ namespace Madu_Uss
                 }
 
                 // Kontrollime, et uus asukoht ei põrkaks kokku seina takistusega
+                // Проверяем через LINQ: если на новых координатах нет стены, шаг разрешен
                 if (!seinad.Any(s => s.X == uusX && s.Y == uusY))
                 {
                     Asukoht.X = uusX;
                     Asukoht.Y = uusY;
-                    break;
+                    break; // Успешный шаг, выходим из цикла поиска
                 }
                 katseid++;
             }
