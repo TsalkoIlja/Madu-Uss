@@ -7,10 +7,10 @@ namespace Madu_Uss
     public class Uss
     {
         private List<Punkt> keha = new List<Punkt>();
-        private bool peabKasvama = false; // Lüliti turvaliseks kasvamiseks
+        private bool peabKasvama = false; // Lüliti turvaliseks kasvamiseks (Переключение для безопасного роста)
 
         public Suund PraeguneSuund { get; set; }
-        public List<Punkt> Keha => keha; // Avalik omadus keha andmetele ligipääsuks
+        public List<Punkt> Keha => keha; // Avalik omadus keha andmetele ligipääsuks (Общедоступное свойство для доступа к данным тела)
 
         public Uss(int algX, int algY, int pikkus)
         {
@@ -41,6 +41,7 @@ namespace Madu_Uss
             uusPea.Joonista();
 
             // Kui lüliti on aktiivne, siis saba ei kustutata (uss kasvab)
+            // Если переключатель активен, хвост не удаляется (червяк растет)
             if (peabKasvama)
             {
                 peabKasvama = false;
@@ -55,7 +56,7 @@ namespace Madu_Uss
 
         public Punkt HangiPea() => keha.First();
 
-        public void Kasva() => peabKasvama = true; // Aktiveerib lüliti
+        public void Kasva() => peabKasvama = true; // Aktiveerib lüliti  (Активирует переключатель)
 
         public bool KasPõrkasVastuEnnast()
         {
